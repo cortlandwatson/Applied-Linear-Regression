@@ -1,0 +1,29 @@
+---
+title: "Playing with Linear Models"
+output: html_document
+---
+
+```{r}
+error <- rnorm(10, 0, 2)
+X1 <- c(5,8,7,1,11)
+X2 <- rep(c(0,1), each=5)
+beta0 <- 3.5
+beta1 <- 8.1
+beta2 <- 50
+beta3 <- -16
+X1 <- rep(c(5,8,7,1,11), each=2)
+Y <- beta0 + beta1*X1 + beta2*X2 + beta3*X1*X2 + error
+plot(Y ~ X1, col=X2+1)
+#View(cbind(Y, X1, X2))
+my.lm <- lm(Y ~ X1 +X2 +X1*X2)
+summary(my.lm)
+abline(my.lm, col="black")
+abline(my.lm$coef[1]+my.lm$coef[3],my.lm$coef[2]+my.lm$coef[4],col="red")
+abline(beta0, beta1, col="black", lty=2)
+abline(beta0+beta2, beta1+beta3, col="red", lty=2)
+```
+
+
+
+
+

@@ -1,0 +1,291 @@
+---
+title: "HardWork2"
+author: "Treavor Wills"
+date: "January 14, 2017"
+output: 
+  html_document:
+    theme: united
+    toc: true
+    toc_float: true
+    code_folding: hide
+---
+
+```{r, include=FALSE}
+library(pander)
+```
+
+
+
+
+<div style="text-align:right;">[Back to Linear Regression](../../LinearRegression.html)</div>
+
+<hr />
+
+# Note regarding attempt 2
+Did not complete anything more from attempt 1 other than typing up exercise 2.4 and finished studying each section in depth. 
+
+# Reading
+<div style="padding-left:45px;">
+| Section  | Read? | Points |
+|----------|-------|--------|
+| 2.1      |  Y   |  6/6    |      
+| 2.2      |  Y   |  3/3    |    
+| 2.3      |  Y   |  1/1    |
+| 2.4      |  Y   |  4/4    |
+| 2.5      |  Y   |  6/6    |
+| 2.6      |  Y   |  3/3    |
+
+</div>
+
+<hr/>
+<br/>
+
+<!-- #########################  Theory   ############################ -->
+
+# Theory
+
+<!-- P R O B L E M     B E G I N S --> 
+
+<div style="padding-left:45px;">
+## Exercise 2.66
+</div>
+
+<div style="padding-left:70px;">
+<!-- Type Problem here -->
+Five observations on $Y$ are to be taken when $X=4,8,12,16,$ and $20$, respectively. The true regression function is $E\{Y\}=20+4X$, and the $\epsilon_i$ are independent $N(0,25)$. 
+
+A) Generate five normal random numbers, with mean $0$ and variance $25$. Consider these random numbers as the error terms for the five $Y$ observations at $X=4,8,12,16,$ and $20$ and calculate $Y_1,Y_2, \dots, Y_5$. Obtain the least squares estimates $b_0$ and $b_1$ when fitting a straight line to the five cases. Also calculate $\widehat{Y}_h$ when $X_h=10$ and obtain a $95$ percent confidence interval for $E\{Y_h\}$ when $X_h=10$
+
+B) Repeat part (a) 200 times, generating new random numbers each time.
+
+C) Make a frequency distribution of the 200 estimates $b_1$. Calculate the mean and standard deviation of the 200 estimates of $b_1$. Are the results consistent with theoretical expectations?
+
+D) What proportion of the 200 confidence intervals for $E\{Y_h\}$ when $X_h=10$ include $E\{Y_h\}$? Is the result consistent with theoretical expectations?  
+
+### Code
+<!-- Type Solution here -->
+
+```{r}
+##    P A R T    A
+# Define true regression function
+EY <- function(x)
+{
+y=20+4*x
+return(y)
+}
+
+# Define X vector
+X <- c(4, 8, 12, 16, 20)
+
+# Generate five normal random numbers with mean 0 and variance 25
+errorTerms <- rnorm(5,0,sqrt(25))
+
+# Initialize Y vector and fill
+Y <- c(0,0,0,0,0)
+for (i in 1:5)
+{
+  Y[i]=20+4*X[i]+errorTerms[i]
+}
+
+# Calculate the linear model
+mylm <- lm(Y ~ X)
+summary(mylm)
+
+# Calculate "Y hat h" when "X hat h" = 10
+Y_hat_h <- mylm$coefficients[1] + mylm$coefficients[2]*10
+
+#
+
+
+##    P A R T    B
+
+# Initialize b1 vector
+b1 <- rep(0,200)
+
+# fill bi
+for (j in 1:200)
+{
+    # Define true regression function
+  EY <- function(x)
+  {
+    y=20+4*x
+    return(y)
+  }
+
+  # Define X vector
+  X <- c(4, 8, 12, 16, 20)
+
+  # Generate five normal random numbers with mean 0 and variance 25
+  errorTerms <- rnorm(5,0,sqrt(25))
+
+  # Initialize Y vector and fill
+  Y <- c(0,0,0,0,0)
+  for (i in 1:5)
+  {
+    Y[i]=20+4*X[i]+errorTerms[i]
+  }
+
+  # Calculate the linear model
+  lm <- lm(Y ~ X)
+  # summary(lm)
+
+  # Calculate "Y hat h" when "X hat h" = 10
+  Y_hat_h <- lm$coefficients[1] + lm$coefficients[2]*10
+
+  # fill b1 vector
+  b1[j] <- lm$coefficients[2]
+
+}
+
+```
+
+### Solution
+A)
+From the five random error terms our estimators for $\beta_0$ and $\beta_1$ are $b_0 =`r mylm$coefficients[1]`$ and
+$b_1 = `r mylm$coefficients[2]`$.
+
+When $X_h=10$ it follows from our model that $\widehat{Y}_h=`r Y_hat_h`$
+
+B) see code
+
+C) Mean of 200 estimates for $b_1 = `r mean(b1) `$ and Standard Deviation $= `r sd(b1) `$ These results are consistent with theory.
+```{r}
+plot(density(b1), main = "Density for 200 estimates of b1")
+```
+
+D) 
+
+
+</div>
+
+<!-- P R O B L E M    E N D S -->
+
+
+
+<!-- P R O B L E M     B E G I N S --> 
+
+<div style="padding-left:45px;">
+## Exercise 
+</div>
+
+<div style="padding-left:70px;">
+<!-- Type Problem here -->
+
+### Solution
+<!-- Type Solution here -->
+
+</div>
+
+<!-- P R O B L E M    E N D S -->
+
+
+
+<!-- P R O B L E M     B E G I N S --> 
+
+<div style="padding-left:45px;">
+## Exercise 
+</div>
+
+<div style="padding-left:70px;">
+<!-- Type Problem here -->
+
+### Solution
+<!-- Type Solution here -->
+
+</div>
+
+<!-- P R O B L E M    E N D S -->
+
+
+<hr/>
+<br/>
+
+<!-- ######################### Application ############################ -->
+
+# Application 
+
+<!-- P R O B L E M     B E G I N S --> 
+
+<div style="padding-left:45px;">
+## Exercise 2.4 
+</div>
+
+<div style="padding-left:70px;">
+<!-- Type Problem here -->
+A director of admission of a college selected 120 students at random to determine whether a student's GPA at the end of their freshman year ($Y$) could be predicted from their ACT test score ($X$).
+
+```{r}
+gpa <- read.table("http://www.stat.ufl.edu/~rrandles/sta4210/Rclassnotes/data/textdatasets/KutnerData/Chapter%20%201%20Data%20Sets/CH01PR19.txt")
+
+pander(head(gpa))
+```
+
+A) Obtain a 99 percent confidence interval for $\beta_1$. Interpret the condifdence interval. Why might the director be interested in whether the confidence interval includes zero?
+
+B) Test, using the test statistic $t^*$, whether or not a linear association exists between ACT score ($X$) and GPA ($Y$). Use level of significance of .01. State the alternatives, decision rule, and conclusion. 
+
+C) What is the P-value of your test in part (B)? How does it support the conclusion in part (B)?
+
+### Solution
+<!-- Type Solution here -->
+
+A) 
+
+
+
+</div>
+
+<!-- P R O B L E M    E N D S -->
+
+
+
+<!-- P R O B L E M     B E G I N S --> 
+
+<div style="padding-left:45px;">
+## Exercise 2.5
+</div>
+
+<div style="padding-left:70px;">
+<!-- Type Problem here -->
+
+### Solution
+<!-- Type Solution here -->
+
+</div>
+
+<!-- P R O B L E M    E N D S -->
+
+
+<!-- P R O B L E M     B E G I N S --> 
+
+<div style="padding-left:45px;">
+## Exercise 2.5
+</div>
+
+<div style="padding-left:70px;">
+<!-- Type Problem here -->
+
+### Solution
+<!-- Type Solution here -->
+
+</div>
+
+<!-- P R O B L E M    E N D S -->
+
+
+<!-- P R O B L E M     B E G I N S --> 
+
+<div style="padding-left:45px;">
+## Exercise 2.5
+</div>
+
+<div style="padding-left:70px;">
+<!-- Type Problem here -->
+
+### Solution
+<!-- Type Solution here -->
+
+</div>
+
+<!-- P R O B L E M    E N D S -->
+</div>

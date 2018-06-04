@@ -1,0 +1,194 @@
+---
+title: "Project5"
+author: "Cortland Watson"
+output: 
+  html_document:
+    theme: flatly
+    css: style.css
+    toc: true
+    toc_float: true
+    code_folding: hide
+---
+
+<script type="text/javascript">
+ function showhide(id) {
+    var e = document.getElementById(id);
+    e.style.display = (e.style.display == 'block') ? 'none' : 'block';
+ }
+</script>
+
+```{r, include=FALSE}
+library(mosaic)
+library(car)
+library(alr3)
+library(lmtest)
+library(pander)
+library(MASS)
+```
+
+## <a href="javascript:showhide('The Data 1')">The Data</a>
+
+<div id="The Data 1" style="display:none;">
+
+```{r}
+KSLHondaCivics <- read.csv("C:/Users/Cortland/Downloads/KSLHondaCivics.csv")
+KSL <- KSLHondaCivics
+pander(KSL)
+```
+
+</div>
+
+The data used in this project was collected from KSL.com. We went forward and collected data as we searched Honda Civics. A total of 114 observations were collected and the data was limited and refined in order to make the data more presentable, especially when presenting information.
+
+##Question
+
+My wife and I currently drive a 2010 Honda Civic. We are looking to see when would be the best time to sell our vehicle so that we might get the best deal for our vehicle?
+
+##Analysis of Data
+
+```{r}
+plot(Price ~ Year, data=KSL)
+```
+
+The above plot shows the data that we are most interested in looking at the year and how it affects the price. Now we want to look and see if there is a relationship between the year and price, although we can already see that there is one. 
+
+```{r}
+KSL.lm <- lm(Price ~ Year, data=KSL)
+pander(summary(KSL.lm))
+```
+
+The above table shows us a few interesting things. First it shows us that our predictor variable has a lot to offer, or say about our data. Given the at our $P$-value for Year is under 0.05, we have sufficient evidence to conclude that $b_1$ is able to contribute to our examination. Now we must check our assumptions. We do this to make sure that we are doing the correct thing in fitting a linear model to this data. 
+
+### <a href="javascript:showhide('Diagnostics 1')">Diagnostics 1</a>
+
+<div id="Diagnostics 1" style="display:none;">
+
+```{r}
+plot(KSL.lm)
+```
+
+</div>
+
+The diagnostics plots of the linear model that we ran suggest a few interesting things. The first plot shows that our data does not have a linear relationship. The second plot shows us that the data is not normally distributed, which is another kicker to what we are hoping for. The last plot shows that there are also some concerns when looking at outlying cases that weigh on the regression.
+
+One thing that we can do in order to have evidence in our claims, and that will aide us in looking for transformations will be the bp test that helps us to determine constant variance.
+
+```{r}
+pander(bptest(KSL.lm))
+```
+
+This test has the null hypothesis that constant variance is normal. Given that our $p$-value is under our level of significance of 0.05, we conclude that the data does not have constant variance. This is important because we now know that a transformation on $X$ is not appropriate. Although, we are able to see that a transformation on $Y$ may be a beneficial action.
+
+Running the boxCox command will allow me to see if the tranformation on $Y$ is something that would help, as well as tell me what transformation to perform. 
+
+```{r}
+boxCox(KSL.lm)
+#this indicates that we should do a log tranformation on Y
+```
+
+After running the boxCox command we are able to see that a log tranformation on $Y$ would benefit our data. We will now apply a linear model that includes this log transformation on $Y$ which becomes $Y`$.
+
+```{r}
+PriceL <- log(KSL$Price)
+KSLT.lm <- lm(PriceL ~ Year, data = KSL)
+pander(summary(KSLT.lm))
+```
+
+Not only does this tranformation help us and have explanatory variables that are significant, while holding all other variables constant, we are able to see that our $R^2$ and adjusted $R^2$ have improved greatly. We can see how this affects our $SSE$ and $SSR$ by running an anova of our linear model.
+
+```{r}
+pander(anova(KSLT.lm))
+```
+
+This is beautiful to see. Our $SSE$ is the point that we want to be low as possible. This means that the residuals are all accounted for as we want the residuals to eventually be at 0. $SSR$ tells us how well our line fits the data, in regards to the shape. Plotting the line in the graphic below helps us to see how this new model looks.
+
+```{r}
+b <- KSLT.lm$coefficients
+plot(Price ~ Year, data = KSL)
+curve(exp(b[1]+b[2]*x), add=TRUE)
+```
+
+This is promising as we are looking at the data itself, but we need to look at the assumptions to see if our fitting of this model is appropriate.
+
+### <a href="javascript:showhide('Diagnostics Transformation')">Diagnostics Transformation</a>
+
+<div id="Diagnostics Transformation" style="display:none;">
+
+```{r}
+plot(KSLT.lm)
+```
+
+</div>
+
+Although our assumption plots look better, we still see that our assumptions through the Fitted Values and Residual plots, and the QQ Plot are still violated. Then we continue to see through the leverage plot that outliers continue to disrupt the model. This leaves us to abondon our model and move towards a robust model. 
+
+```{r}
+KSLTR.lm <- rlm(PriceL ~ Year, data = KSL)
+summary(KSLTR.lm)
+```
+
+The robust models enables us to fit a model to data, while not having to meet assumptions. It also allows us to lessen the influence of outlying data points. The below plot shows us what the robust model in red, while still looking at the tranformed model in green. 
+
+```{r}
+plot(Price ~ Year, data = KSL)
+curve(exp(b[1]+b[2]*x), col="green", add=TRUE)
+br <- KSLTR.lm$coefficients
+curve(exp(br[1]+br[2]*x), col="red", add=TRUE)
+```
+
+Now that we can see the two models together, we can see how similar they are. The coefficients of both the transformed model and the robust model are close, but they do differ. It appears that the robust model does fit the data a little bit better but how are $SSE$ and $SSR$ affected?
+
+```{r}
+pander(anova(KSLTR.lm))
+```
+
+The robust fits the line better, $SSR$ improved, but $SSE$ did not improve.
+
+Now that we have our model, under the tranformed $Y$ we are able to see our model, but we wantt o see if the model can improve by adding other predictor variables. We do that through added variable plots.
+
+### <a href="javascript:showhide('Added Variable Plots')">Added Variable Plots</a>
+
+<div id="Added Variable Plots" style="display:none;">
+
+```{r}
+plot(KSLT.lm$residuals ~ KSL$Mileage)
+plot(KSLT.lm$residuals ~ KSL$Trim)
+plot(KSLT.lm$residuals ~ KSL$ExteriorColor)
+```
+
+</div>
+
+It appears that Trim could add to our model, but it is important to watch the adjusted $R^2$ as we do so, this is our measurement to make sure that we are not overfitting our data.
+
+```{r}
+KSLTT.lm <- lm(PriceL ~ Year+Trim, data = KSL)
+summary(KSLTT.lm)
+```
+
+Now that we are able to see how the Trim affects our model, we are able to make a conclusion. Trim does not appear to affect the model enough to where it should be included. The adjusted $R^2$ does improve, but when looking specifically at all of the different $b$'s we see that only three are significant holding all others to be constant. This suggests to me, that by adding these factors into the model, would be a waste. 
+
+##Conclusion
+
+The model that we end up with for our data is when we transformed $Y$ and is stated as follows...$$Y`=\beta_0+\beta_1X_1$$
+
+In the model we have the following coefficients $$\beta_0 = -210.2$$ and $$\beta_1 = 0.1091$$ where $Y'$ is the log of the sum of beta's and $X$ is the year of the vehicle.
+
+##Limitations
+
+Having said this, our model does not meet the assumptions, in fact it fails them and as we run the pureErrorAnova test we are able to see that the model continues to fail in the lack of fit test. 
+
+```{r}
+pander(pureErrorAnova(KSLT.lm))
+```
+
+##Final Words
+
+Brother Saunders once said that although we might not meet requirements, that does not mean that what we find is not useful. With this model we are able to use linear models to their full ability, they are best used and mainly used to predict. With this in mind, we have not met assumptions and we have seen issues with this model, but we are able to predict the price of a Honda Civic, given the year that it was made. 
+
+
+
+
+
+
+
+

@@ -1,0 +1,166 @@
+---
+title: "Project 2"
+author: "Cortland Watson"
+output: 
+  html_document:
+    theme: flatly
+    css: style.css
+    toc: true
+    toc_float: true
+    code_folding: hide
+---
+
+```{r, include=FALSE}
+library(mosaic)
+library(pander)
+library(alr3)
+library(lmtest)
+library(car)
+
+```
+
+
+## Background
+
+An experiment was performed to understand the $CO_2$ dependence of photosynthesis in the C4 grass *Echinochloa crus—galli* following chilling. The data from the experiment is recorded in the `CO2` dataset.
+
+Suppose the researchers approached you with their data and the following questions. 
+
+* **Question 1.** How much does the ambient concentration of $CO_2$ in the air effect the $CO_2$ uptake of a plant? Is this effect the same for all treatment and plant type combinations?
+
+* **Question 2.** After accounting for the ambient concentration of $CO_2$ in the air, how much does the mean $CO_2$ uptake differ between plants that are chilled and non-chilled?
+
+* **Question 3.** After accounting for the ambient concentration of $CO_2$ in the air and whether or not the plan was chilled, how much does the mean $CO_2$ uptake differ between plants that are from Quebec versus Mississippi?
+
+Use the regression analysis tools you have developed thus far in the semester (including the material you are learning this week) to put together an analysis that answers their questions. Be sure to interpret the analysis you perform so that a non-statistician could understand your conclusions. The analysis section should be very technical and show all detail needed for another statistician to understand your work.
+
+<hr />
+<br />
+
+<!-- Place your Analysis and Conclusions here. You can present either section first. -->
+
+$$Full : Y_i=\beta_0+\beta_1X_{i1}+\beta_2X^2_{i1}+\beta_3X^3_{i1}$$
+
+$$Reduced : Y_i=\beta_0+\beta_1X_{i1}$$
+
+$$ H_0 : \beta_2=\beta_3=0 $$
+$$ H_a : \text{at least one } \neq0 $$
+
+$X$=conc
+$Y$=uptake
+
+```{r}
+
+co2.lm <- lm(uptake~conc, data=CO2)
+co2.lm2 <- lm(uptake~conc+I(conc^2)+I(conc^3), data=CO2)
+pander(anova(co2.lm,co2.lm2))
+```
+
+This test allows us to see that our full model is a good represenation of the data. That by applying this linear model, we are able to explain the data.
+
+```{r}
+plot(uptake~conc,data=CO2)
+b <- coef(co2.lm2)
+curve(b[1]+b[2]*x+b[3]*x^2+b[4]*x^3, add=TRUE)
+```
+
+Now with the data we are able to add a line that shows our current linear model. As we can see through the line and data, a lot of the data is not represented.
+
+```{r}
+par(mfrow=c(1,2))
+plot(co2.lm2$residuals~Treatment, data=CO2)
+plot(co2.lm2$residuals~Type, data=CO2)
+```
+
+By looking at the residuals of our linear model, compared to the remaining explanatory variables we are to see if one of them, or both of them can explain what is missing. Or, if they have anything to add.
+
+```{r}
+co2.lm3 <- lm(uptake~conc+I(conc^2)+I(conc^3)+Type, data=CO2)
+pander(summary(co2.lm3))
+```
+
+With this we are able to see that adding Type into our model we are able to explain, or account for some of the residuals. But, by adding another variable, we now have to fix our model to be represented correctly.
+
+$$Full : Y_i=\beta_0+\beta_1X_{i1}+\beta_2X^2_{i1}+\beta_3X^3_{i1}+\beta_4X_{i2}$$
+
+$$Reduced : Y_i=\beta_0+\beta_1X_{i1}$$
+
+$$ H_0 : \beta_2=\beta_3=0 $$
+$$ H_a : \text{at least one } \neq0 $$
+
+$X_{i1}$=conc
+$X_{i2}$=Type
+$Y$=uptake
+
+```{r}
+co2.lm3 <- lm(uptake~conc+I(conc^2)+I(conc^3)+Type, data=CO2)
+pander(summary(co2.lm3))
+```
+ 
+This test shows us that our assumption, in that Type will account for some of the residuals is accurate. Type has something significant to add considering that all other variable are included.
+ 
+```{r}
+plot(co2.lm3$residuals~Treatment, data=CO2)
+co2.lm4 <- lm(uptake~conc+I(conc^2)+I(conc^3)+Type+Treatment, data=CO2)
+pander(summary(co2.lm4))
+```
+
+Now that we still have some data that is not represented or explained, we want to see if our last variable can add to what we have and can explain some of the residuals. In the plot above we are able to see that it does. This then makes it necessary to change our model.
+
+$$Full : Y_i=\beta_0+\beta_1X_{i1}+\beta_2X^2_{i1}+\beta_3X^3_{i1}+\beta_4X_{i2}+\beta_5X_{i3}$$
+
+$$Reduced : Y_i=\beta_0+\beta_1X_{i1}$$
+
+$$ H_0 : \beta_2=\beta_3=0 $$
+$$ H_a : \text{at least one } \neq0 $$
+
+$X$=conc
+$X_{i2}$=Type
+$X_{i3}$=Treatment
+$Y$=uptake
+
+```{r}
+par(mfrow=c(1,1))
+plot(uptake~conc,data=CO2)
+b <- coef(co2.lm4)
+curve(b[1]+b[2]*x+b[3]*x^2+b[4]*x^3+b[5]*0+b[6]*0, add=TRUE, col="red")
+curve(b[1]+b[2]*x+b[3]*x^2+b[4]*x^3+b[5]*0+b[6]*1, add=TRUE, col="blue")
+curve(b[1]+b[2]*x+b[3]*x^2+b[4]*x^3+b[5]*1+b[6]*0, add=TRUE, col="green")
+curve(b[1]+b[2]*x+b[3]*x^2+b[4]*x^3+b[5]*1+b[6]*1, add=TRUE, col="black")
+```
+
+Now we are able to see that our model is more accurately representing the data. 
+
+```{r}
+co2.lm5 <- lm(uptake~conc*Type+I(conc^2)+I(conc^3)+Type+Treatment, data=CO2)
+
+pander(summary(co2.lm5))
+```
+
+Now that we have several lines representing the data, we see a parallel pattern between the different lines. This is not an accurate representation so we are adding an interaction that might help in accounting for this. The interaction, through the summary, shows us that it has something to add while all other variables are included, so we now change the model.
+
+$$Full : Y_i=\beta_0+\beta_1X_{i1}+\beta_2X^2_{i1}+\beta_3X^3_{i1}+\beta_4X_{i2}+\beta_5X_{i3}$$
+(HELP ME, I DO NOT KNOW HOW TO ADD THE INTERACTION)
+$$Reduced : Y_i=\beta_0+\beta_1X_{i1}$$
+
+$$ H_0 : \beta_2=\beta_3=0 $$
+$$ H_a : \text{at least one } \neq0 $$
+
+$X$=conc
+$X_{i2}$=Type
+$X_{i3}$=Treatment
+$Y$=uptake
+
+```{r}
+plot(uptake~conc,data=CO2)
+b <- coef(co2.lm5)
+curve(b[1]+b[2]*x+b[3]*0+b[4]*x^2+b[5]*x^3+b[6]*0+b[7]*x*0, add=TRUE, col="red")
+curve(b[1]+b[2]*x+b[3]*0+b[4]*x^2+b[5]*x^3+b[6]*1+b[7]*x*0, add=TRUE, col="blue")
+curve(b[1]+b[2]*x+b[3]*1+b[4]*x^2+b[5]*x^3+b[6]*0+b[7]*x*1, add=TRUE, col="green")
+curve(b[1]+b[2]*x+b[3]*1+b[4]*x^2+b[5]*x^3+b[6]*1+b[7]*x*1, add=TRUE, col="black")
+
+```
+(I COULD NOT FIGURE OUT HOW TO ADD MORE INTERACTIONS)
+<!-- End your Analysis and Conclusion sections -->
+<footer>
+</footer>

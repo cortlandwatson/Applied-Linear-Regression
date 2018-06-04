@@ -1,0 +1,177 @@
+---
+title: "My Attempt at your Data"
+author: "Brother Saunders"
+date: "March 1, 2017"
+output: html_document
+---
+
+## Time Spent
+
+Reached my 1 hour time limit and I'm still not confident that I found your model, though I should have at least a couple of correct elements. Nice work.
+
+
+## My Approach
+
+Start with a pairs plot to see what we have.
+
+```{r, fig.width=10, fig.height=10}
+#setwd("/Users/ghsaund/Documents/A14-Winter 2017/Math 425/Project 3/Student Data/Cortland Watson")
+# Your data
+ydata <- read.csv("CWdata.csv", header=TRUE)
+# View(ydata)
+pairs(ydata)
+```
+
+### X8 Looks Promising
+
+Perhaps a slight curve to the data. 
+
+```{r}
+plot(Y ~ X8, data=ydata)
+y.lm <- lm(Y ~ X8, data=ydata)
+plot(y.lm, which=1)
+```
+
+A transformation seems promising. Box-Cox suggests (very strongly) a square root transformation on Y.
+
+```{r}
+library(car)
+boxCox(y.lm)
+y.lmT <- lm(sqrt(Y) ~ X8, data=ydata)
+plot(y.lmT, which=1)
+plot(sqrt(Y) ~ X8, data=ydata)
+summary(y.lmT)
+b <- y.lmT$coefficients
+curve(b[1] + b[2]*x, add=TRUE)
+```
+
+The above plot looks really good. 
+
+How does this compare to using just an X^2 term?
+
+```{r}
+y.lmxT <- lm(Y ~ I(X8^2), data=ydata)
+summary(y.lmxT)
+b <- coef(y.lmxT)
+plot(Y ~ X8, data=ydata)
+curve(b[1] + b[2]*x^2, add=TRUE)
+```
+
+The adjusted R-Squared values are essentially the same, and a similar result holds for the other criterions. I will stick with the model that is simpler to interpret, which is the Y ~ X8^2. Should the X term also be included in the model?
+
+```{r}
+plot(y.lmxT$residuals ~ X8, data=ydata, col=X12+1)
+summary(lm(Y ~ X8 + I(X8^2), data=ydata))
+```
+
+Not enough evidence to do so.
+
+Should other variables be added?
+
+```{r, fig.width=10, fig.height=10}
+pairs(data.frame(R=y.lmxT$res, ydata[,-1]))
+round(cor(data.frame(R=y.lmxT$res, ydata[,-1]))[1,],2)
+```
+
+Note that $X3$ and $X4$ are perfectly correlated, so they are essentially the same variable. I will drop one, randomly pick $X4$, because both will give the same information about $Y$. If they were each used separately in the model, then their betas would mathematically recombine to be one term with a combined beta.
+
+Also, $X16$ is the square root of $X6$ and is otherwise perfectly correlated, so $X16$ will be dropped.
+
+$X14$ has no variability, so it will be dropped from the dataset as well. Same for $X7$.
+
+$X17$ and $X20$ are also perfectly correlated, so $X20$ will be dropped.
+
+```{r, fig.width=10, fig.height=10}
+# Reduced Data
+ydatar <- ydata[,!colnames(ydata)%in%c("X4","X16","X14","X7","X20")]
+pairs(data.frame(R=y.lmT$res, ydatar[,-1]), col=as.factor(ydatar$X12))
+```
+
+### Add X12?
+
+The added variable plot suggests adding perhaps $X12$. The information below confirms this and shows the new result.
+
+```{r}
+plot(y.lmxT$res ~ X12, data=ydatar)
+y.lm.8.12 <- lm(Y ~ I(X8^2) + X12, data=ydatar)
+summary(y.lm.8.12)
+plot(y.lm.8.12, which=1)
+plot(Y ~ X8, data=ydatar, col=as.factor(X12))
+b <- coef(y.lm.8.12)
+curve(b[1] + b[2]*x^2, add=TRUE, col="black")
+curve(b[1] + b[2]*x^2 + b[3], add=TRUE, col="red")
+```
+
+
+### Add anything Else?
+
+```{r, fig.width=10, fig.height=10}
+pairs(data.frame(res=y.lm.8.12$res, ydatar[,-1]), col=as.factor(ydatar$X11))
+```
+
+Perhaps an interaction of $X3$ and $X6$? I suspect this because the two plots both show some interesting structure. THe graphs of $X1$ and $X5$ also hint at some potential structure.
+
+```{r}
+pairs(data.frame(res=y.lm.8.12$res, ydatar[,c("X1","X3","X5","X6")]))
+
+# Interaction term X3:X6 is not interesting.
+y.lm.8.12.3.6 <- lm(Y ~ I(X8^2) + X12 + X3:X6, data=ydatar)
+summary(y.lm.8.12.3.6)
+
+# Add X3? No.
+summary(lm(Y ~ I(X8^2) + X12 + X3, data=ydatar))
+
+# Add X1? No.
+summary(lm(Y ~ I(X8^2) + X12 + X1, data=ydatar))
+
+# Add X5? Yes, could be good.
+summary(lm(Y ~ I(X8^2) + X12 + X5, data=ydatar))
+
+# Add X6? No.
+summary(lm(Y ~ I(X8^2) + X12 + X6, data=ydatar))
+```
+
+### Add X5
+
+Better model, but something is still missing.
+
+```{r}
+y.lm.8.12.5 <- lm(Y ~ I(X8^2) + X12 + X5, data=ydatar)
+summary(y.lm.8.12.5)
+plot(y.lm.8.12.5, which=1)
+```
+
+```{r, fig.width=10, fig.height=10}
+pairs(data.frame(res=y.lm.8.12.5$res, ydatar[,-1]))
+```
+
+Well... out of time. Used up my 1 hour max per student. Either I found it, or you win.
+
+
+
+## My Guess at your Model
+
+$$
+  Y_i = \beta_0 + \beta_1 X_8^2 + \beta_2 X_{12} + \beta_3 X_5 + \epsilon_i
+$$
+
+where $\epsilon_i \sim N(0, 13.68^2)$ with
+
+```{r}
+#pander::pander(confint(y.lm.8.12.5, level=1-0.05/4), caption="Confidence Intervales")
+```
+
+--------------------------------------
+     &nbsp;        Lower      Upper 
+----------------- --------- ----------
+  $\beta_0$        79.98     135.4   
+
+   $\beta_1$        16.33      16.5   
+
+   $\beta_2$        -19.01    -0.5839  
+
+   $\beta_3$        -8.547    -0.6862  
+--------------------------------------
+
+Table: 95% Simultaneous Confidence Intervals
+

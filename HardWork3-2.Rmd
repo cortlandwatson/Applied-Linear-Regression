@@ -1,0 +1,172 @@
+---
+title: "HardWork3.2"
+author: "Cortland Watson"
+output: 
+  html_document:
+    theme: flatly
+    toc: true
+    toc_float: true
+    code_folding: hide
+---
+
+```{r, include=FALSE}
+library(mosaic)
+library(pander)
+library(lmtest)
+library(car)
+```
+
+
+<script type="text/javascript">
+ function showhide(id) {
+    var e = document.getElementById(id);
+    e.style.display = (e.style.display == 'block') ? 'none' : 'block';
+ }
+</script>
+
+<hr />
+
+# Reading {18}
+<div style="padding-left:45px;">
+| Section  | Points |
+|----------|--------|
+|     3.9  |      7    |      
+| 3.10      |      4    |    
+|     3.11  |       7   |
+
+</div>
+
+<hr/>
+<br/>
+
+<!-- #########################  Theory   ############################ -->
+
+# Theory {3}
+
+<!-- P R O B L E M     B E G I N S --> 
+
+<div style="padding-left:45px;">
+## Exercise 3.20 {3}
+
+</div>
+
+<div style="padding-left:60px;">
+### <a href="javascript:showhide('Problem 3.20')">Problem 3.20</a>
+
+<div id="Problem 3.20" style="display:none;">
+
+If the error terms in a regression model are independent $N$(0, $\sigma$^2), what can be said about the error terms after transformation $X$' = 1/$X$ is used? Is the situation the same after transformation $Y$' = 1/$Y$ is used?
+
+</div>
+</div>
+
+<div style="padding-left:70px;">
+<!-- Type Problem here -->
+
+### Solution
+<!-- Type Solution here -->
+
+$e_i$ = $Y_i$ - $\hat{Y}$ Therefore, if we were to transform $X$ the residuals would not be affected. If we were to include a transformation for $Y$, then we would affect the residuals by the factor of which we transform the data.
+
+</div>
+
+<!-- P R O B L E M    E N D S -->
+
+
+<hr/>
+<br/>
+
+<!-- ######################### Application ############################ -->
+
+# Application {6}
+
+<!-- P R O B L E M     B E G I N S --> 
+
+<div style="padding-left:45px;">
+## Exercise 3.16 {6}
+</div>
+
+<div style="padding-left:60px;">
+### <a href="javascript:showhide('Problem 3.16')">Problem 3.16</a>
+
+<div id="Problem 3.16" style="display:none;">
+
+```{r, include=FALSE}
+#Solution <- read.table('http://www.stat.ufl.edu/~rrandles/sta4210/Rclassnotes/data/textdatasets/KutnerData/Chapter%20%203%20Data%20Sets/CH03PR15.txt')
+#names(Solution) <- c("Conc", "Time")
+
+```
+
+Refer to SOLUTION CONCENTRATION problem 3.15. 
+
+A) Prepare a scatter plot of the data. What transformation of $Y$ might you try, using the prototype patterns in Figure 3.15 to achieve constant variance and linearity?
+B) Use the Box-Cox procedure and standardization (3.36) to find an appropriate power transformation. Evaluate $SSE$ for $\lambda$ = -.2,-.1,0,.1,.2. What transformation of $Y$ is suggested?
+C) Use the transformation $Y$' = log_10$Y$ and obtain the estimated linear regression function for the transformed data.
+D) Plot the estimated regression line and the transformed data. Does the regression line appear to be a good fit to the transformed data?
+E) Obtain the residuals and plot them against the fitted values. Also prepare a normal probability plot. What do your plots show?
+F) Express the estimated regression function in the original units.
+
+
+</div>
+</div>
+
+<div style="padding-left:70px;">
+<!-- Type Problem here -->
+
+### Solution
+<!-- Type Solution here -->
+
+```{r}
+###Work
+## Part A
+#plot(Solution)
+#Solution.lm <- lm(Solution$Time, Solution$Conc)
+#abline(Solution.lm)
+#Solyp <- log(Solution$Conc)
+#plot(Solution$Time, Solyp)
+#Solution.lmT <- lm(Solyp ~ Solution$Time, data=Solution)
+#abline(Solution.lmT)
+## PArt B
+#boxCox(Solution.lm)
+##Part C
+#summary(Solution.lmT)
+##Part D
+#plot(Solution$Time, Solyp)
+#abline(Solution.lmT)
+##Part E
+#plot(Solution.lmT$fitted.values, Solution.lmT$residuals)
+#qqnorm(Solution.lmT$residuals)
+##Part F
+#exp(1.50792)
+#exp(-0.44993)
+
+```
+
+A) For the transformation we would use the log of $Y$.
+$$
+Y'=log(Y)
+$$
+B) The suggested transformation of $Y$ is about -.4. I do not know how to zoom or make the scale bigger, these are my estimates from the boxCox.
+
+<div style="padding-left:45px;">
+| $\lambda$  | Value |
+|----------|--------|
+|-.2       |     -6    |      
+|   -.1    |    -9     |    
+|      0 |  -10       |
+|       .1|    -12     |
+|       .2|       -14  |
+
+</div>
+
+C) $Y$' = 1.50792 - 0.44993X
+D) The regression line of the transformed data fits the data very well. It hits all groups and enables all data to be represented.
+E) From the graphics in part E we are able to see that there is one concern where the residuals are not passed through for the third group. Then we are able to see that in the normal probability plot that the normality has some concerns, but I would accept the data.
+F) $Y$ = 4.517325 + 0.6376728$X$
+
+</div>
+
+<!-- P R O B L E M    E N D S -->
+
+
+</div>

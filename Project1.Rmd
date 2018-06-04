@@ -1,0 +1,186 @@
+---
+title: "Project 1"
+author: "Cortland Watson"
+output: 
+  html_document:
+    theme: flatly
+    toc: true
+    toc_float: true
+    code_folding: hide
+---
+
+```{r, include=FALSE}
+library(mosaic)
+library(pander)
+library(lmtest)
+library(car)
+library(alr3)
+```
+
+
+<script type="text/javascript">
+ function showhide(id) {
+    var e = document.getElementById(id);
+    e.style.display = (e.style.display == 'block') ? 'none' : 'block';
+ }
+</script>
+
+<div style="padding-left:45px;">
+## Plutonium Measurement 
+</div>
+
+<div style="padding-left:60px;">
+### <a href="javascript:showhide('Data ')">Data </a>
+
+<div id="Data " style="display:none;">
+
+```{r}
+pander(pluton <- read.table("http://www.stat.ufl.edu/~rrandles/sta4210/Rclassnotes/data/textdatasets/KutnerData/Chapter%20%203%20Data%20Sets/CH03TA10.txt", header=FALSE))
+colnames(pluton) <- c("AlphaCount","PlutoniumActivity")
+```
+
+
+</div>
+
+The data above is taken from testing a restoration site of nuclear materials. By detecting Alpha strikes we are able to predict the Pluton Activity. 
+
+</div>
+
+<div style="padding-left:45px;">
+## 3.11 Simplified
+</div>
+
+<div style="padding-left:60px;">
+### <a href="javascript:showhide('With Outlier')">With Outlier</a>
+
+<div id="With Outlier" style="display:none;">
+
+With the data now represented in a scatterplot and with the lowess curve, we are able to see that this data appears to have some kind of a linear relationship. We also see that there is an outlier. With that outlier, it was found that the test was not performed correctly and it was removed from the data.
+
+```{r}
+plot(AlphaCount ~ PlutoniumActivity, data=pluton)
+
+```
+
+```{r}
+plot(AlphaCount ~ PlutoniumActivity, data=pluton)
+lines(lowess(pluton$AlphaCount ~ pluton$PlutoniumActivity))
+
+```
+
+</div>
+</div>
+
+<div style="padding-left:60px;">
+### <a href="javascript:showhide('Without Outlier')">Without Outlier</a>
+
+<div id="Without Outlier" style="display:none;">
+
+The first lm is shown without having taken out the 24th observation. 
+
+```{r}
+#pluton.lm <- lm(AlphaCount ~ PlutoniumActivity, data=pluton)
+#pander(summary(pluton.lm))
+
+```
+
+The following is after taking out the outlier. This enables us to see the data how it will be used. 
+
+```{r}
+plut <- pluton[-24,]
+plot(plut$AlphaCount ~ plut$PlutoniumActivity)
+
+```
+
+Now that we have the same data as 3.11, we will run the analysis of the linear model.
+
+```{r}
+plut.lm <- lm(plut$AlphaCount ~ plut$PlutoniumActivity)
+pander(summary(plut.lm))
+pander(anova(plut.lm))
+pander(pureErrorAnova(plut.lm))
+plot(plut.lm$residuals ~ plut.lm$fitted.values); qqnorm(plut.lm$residuals)
+```
+
+With the regression test we are able to see that there is a linear relationship, but with the graphics we are able to see that there is something going on with variance that causes us concern. The megaphone shape causes us to question the data. In order to resolve this question, we run the Breusch-Pagan Test to determine the constancy of error terms. 
+
+```{r}
+pander(bptest(plut.lm, studentize = FALSE))
+```
+
+The test results show us that there is not constancy of error terms. 
+
+</div> 
+</div>
+
+
+<div style="padding-left:60px;">
+### <a href="javascript:showhide('1st Transformation')">1st Transformation</a>
+
+<div id="1st Transformation" style="display:none;">
+
+In order to try to correct the nonconstant variance we will see if a tranformation of $Y$ would be appropriate.
+
+```{r}
+boxCox(plut.lm)
+```
+
+The test suggests that we use a $Y$' = $\sqrt(Y)$ transformation. After we apply this transformation our data appears in this manner.
+
+```{r}
+yp <- sqrt(plut$AlphaCount)
+plot(yp ~ plut$PlutoniumActivity)
+```
+
+With this new graphic we are able to see a change in the data and hope for results in a more accurate lm. We now run the lm and diagnostic graphics to see how this tranformation helped. 
+
+```{r}
+plut.lmT <- lm(yp ~ plut$PlutoniumActivity)
+pander(summary(plut.lmT))
+pander(anova(plut.lmT))
+pander(pureErrorAnova(plut.lmT))
+plot(plut.lmT$residuals ~ plut.lmT$fitted.values); qqnorm(plut.lmT$residuals)
+```
+
+Now that this transformation has been applied, we have some good and bad news. First, the variance seems to have been corrected. At the same time, by making the transformation we have now messed with the linearity of the data. The lack of fit has a p-value of 0.0010 which means that the data does nothave a linear relationship.
+
+</div>
+</div>
+
+
+<div style="padding-left:60px;">
+### <a href="javascript:showhide('2nd Transformation')">2nd Transformation</a>
+
+<div id="2nd Transformation" style="display:none;">
+
+Now our objective is to correct the mistake that we made with our first tranformation, while keeping the good that we obtained with the transformation. To do this we will transform the $X$ variable in a like manner. We transform $X$'=$\sqrt(X)$ in order to obtain a linear relationship.
+
+```{r}
+xp <- sqrt(plut$PlutoniumActivity)
+plut.lmT2 <- lm(yp ~ xp)
+pander(summary(plut.lmT2))
+pander(anova(plut.lmT2))
+pander(pureErrorAnova(plut.lmT2))
+plot(plut.lmT2$residuals ~ plut.lmT2$fitted.values); qqnorm(plut.lmT2$residuals)
+```
+
+With this transformation we are able to see that we corrected the linearity issues, but the variance is a little questionable. In this case we will run the Breusch-Pagan test to test if the variance is concerning. 
+
+```{r}
+pander(bptest(plut.lmT2, studentize = FALSE))
+```
+
+The bptest says that the variance is not perfect, but it passes so that we are able to perform the lm. Now to check how well the lm fits the data.
+
+```{r}
+plot(yp ~ xp)
+lines(lowess(yp ~ xp), col="blue", lwd=2)
+source("confband.R")
+confband(plut.lmT2)
+
+```
+
+One good thing to see is that the lm fits inside of our confidence band. This means that we were able to create an lm that fits appropriately to the data.
+
+</div>
+</div>

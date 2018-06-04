@@ -1,0 +1,409 @@
+---
+title: "HardWork3"
+author: "Cortland Watson"
+output: 
+  html_document:
+    theme: flatly
+    toc: true
+    toc_float: true
+    code_folding: hide
+---
+
+```{r, include=FALSE}
+library(mosaic)
+library(pander)
+library(lmtest)
+library(car)
+```
+
+
+<script type="text/javascript">
+ function showhide(id) {
+    var e = document.getElementById(id);
+    e.style.display = (e.style.display == 'block') ? 'none' : 'block';
+ }
+</script>
+
+<hr />
+
+# Reading {30}
+<div style="padding-left:45px;">
+| Section  | Points |
+|----------|--------|
+|3.1       |2          |      
+|   3.2    | 2         |    
+|      3.3 |  8        |
+|3.4       |   2       |
+|   3.5    |    2      |
+|      3.6 |     6     |
+|3.7       |      7    |
+|   3.8    |       1   |
+
+</div>
+
+<hr/>
+<br/>
+
+<!-- #########################  Theory   ############################ -->
+
+# Theory {6}
+
+<!-- P R O B L E M     B E G I N S --> 
+
+<div style="padding-left:45px;">
+## Exercise 3.1 {2}
+
+</div>
+
+<div style="padding-left:60px;">
+### <a href="javascript:showhide('Problem 3.1')">Problem 3.1</a>
+
+<div id="Problem 3.1" style="display:none;">
+
+Distinguish between (1) residual and semistudentized residual, (2) $E$ {$\epsilon\_i$} = 0 and $\bar{e}$ = 0 (3) error term and residual.
+
+</div>
+</div>
+
+<div style="padding-left:70px;">
+<!-- Type Problem here -->
+
+### Solution
+<!-- Type Solution here -->
+
+1) Residual is the distance from an observed point to the fitted values, or best fit line. The semi-studentized residual is trying to standardize the residuals by using a single point. This enable us to use an approximation for the residuals.
+2) $E$ is stating that the expected residuals is 0 with a constant variance, like stated in the linear model, while $\bar{e}$ is showing that the average of the observed residuals are 0. $\bar{e}$ should reflect the other.
+3) Residual is the distance between the observed points and the fitted values. Error term is found at the end of the linear model and is stating that the mean of residuals is 0 and that the variance is constant/normal.
+
+</div>
+
+<!-- P R O B L E M    E N D S -->
+
+
+<!-- P R O B L E M     B E G I N S --> 
+
+<div style="padding-left:45px;">
+## Exercise 3.12 {2}
+</div>
+
+<div style="padding-left:60px;">
+### <a href="javascript:showhide('Problem 3.12')">Problem 3.12</a>
+
+<div id="Problem 3.12" style="display:none;">
+
+A student does not understand why the sum of squares defined in (3.16) is called a pure error sum of squares "since the formula looks like one for an ordinary sum of squares." Explain.
+
+</div>
+</div>
+
+<div style="padding-left:70px;">
+<!-- Type Problem here -->
+
+### Solution
+<!-- Type Solution here -->
+
+$$
+ SSE = \sum(Y_i - \hat{Y}_i)^2
+$$
+$$
+ SSPE = \sum_j\sum_i(Y_ij - \bar{Y}_j)^2
+$$
+
+The difference between $SSE$ and $SSPE$ is found with the object j. J is referring to the group of $X$ values that the $Y$'s are found. $SSPE$ shows the observations in relation to the mean of the $Y_i$'s per $X$ value. $SSE$ is an accumulation of fitted values for $Y$ or $\hat{Y}$. The individuals are then compared to these fitted values and not the average of the observations per $X$ value.
+
+</div>
+
+<!-- P R O B L E M    E N D S -->
+
+
+<!-- P R O B L E M     B E G I N S --> 
+
+<div style="padding-left:45px;">
+## Exercise 3.23 {2}
+</div>
+
+<div style="padding-left:60px;">
+### <a href="javascript:showhide('Problem 3.23')">Problem 3.23</a>
+
+<div id="Problem 3.23" style="display:none;">
+
+A linear regression model with intercept $\beta_0$ = 0 is under consideration. Data have been obtained that contain replications. State the full and reduced models for testing the appropriateness of the regression function under consideration. What are the degrees of freedom associated with the full and reduced models if $n$ = 20 and $c$ = 10?
+
+</div>
+</div>
+
+<div style="padding-left:70px;">
+<!-- Type Problem here -->
+
+### Solution
+<!-- Type Solution here -->
+
+1) 
+$$
+ \text{Full Model:} Y_ij = \mu_j(\beta_0 + \beta_1 X_j) + \epsilon_ij
+$$
+$$
+ \text{Reduced Model:} Y_ij = 0 + \beta_1 X_j + \epsilon_ij
+$$
+
+2)
+$$
+ df_R= (n-2) df_R=18 
+$$
+$$
+ df_F= (n-c) df_F=10
+$$
+
+</div>
+
+<!-- P R O B L E M    E N D S -->
+
+
+<hr/>
+<br/>
+
+<!-- ######################### Application ############################ -->
+
+# Application {20}
+
+<!-- P R O B L E M     B E G I N S --> 
+
+<div style="padding-left:45px;">
+## Exercise 3.3 {0}
+</div>
+
+<div style="padding-left:60px;">
+### <a href="javascript:showhide('Problem 3.3')">Problem 3.3</a>
+
+<div id="Problem 3.3" style="display:none;">
+
+```{r, include=FALSE}
+Ex3.3 <- read.table('http://www.stat.ufl.edu/~rrandles/sta4210/Rclassnotes/data/textdatasets/KutnerData/Chapter%20%201%20Data%20Sets/CH01PR19.txt')
+```
+
+Refer to GRADE POINT AVERAGE problem 1.19.
+
+A) Prepare a box plot for the ACT scores $X_i$. Are there any noteworthy features in this plot?
+B) Prepare a dot plot of the residuals. What information does this plot provide?
+C) Plot the residual $e_i$ against the fitted values $\hat{Y}_i$. What departures from regression model (2.1) can be studied from this plot? What are your findings?
+D) Prepare a normal probability plot of the residuals. Also obtain the coefficient of correlation between the ordered residuals and their expected values under normality. Test the reason-ableness of the normality assumption here using table B.6 and $\alpha$ = 0.05. What do you conclude?
+E) Conduct the Brown-Forsythe test to determine whether or not the error variance varies the level of $X$. Divide the data into the two groups $X$ <26, $X$ >= 26, and use $\alpha$ = 0.01. State the decision rule and conclusion. Does your conclusion support your preliminary findings in part(c)?
+
+</div>
+</div>
+
+<div style="padding-left:70px;">
+<!-- Type Problem here -->
+
+### Solution
+<!-- Type Solution here -->
+
+```{r}
+### Work 
+## Part A
+#
+## Part B
+# 
+## Part C
+# 
+## Part D
+# 
+## Part E
+#
+```
+
+
+</div>
+
+<!-- P R O B L E M    E N D S -->
+
+
+
+<!-- P R O B L E M     B E G I N S --> 
+
+<div style="padding-left:45px;">
+## Exercise 3.4 {2}
+</div>
+
+<div style="padding-left:60px;">
+### <a href="javascript:showhide('Problem 3.4')">Problem 3.4</a>
+
+<div id="Problem 3.4" style="display:none;">
+
+```{r, include=FALSE}
+Ex3.4 <- read.table('http://www.stat.ufl.edu/~rrandles/sta4210/Rclassnotes/data/textdatasets/KutnerData/Chapter%20%201%20Data%20Sets/CH01PR20.txt', header=FALSE)
+```
+
+Refer to COPIER MAINTENANCE problem 1.20. 
+
+A) Prepare a dot plot for the number of copiers serviced $X_i$. What information is provided by this plot? Are there any outlying cases with respect to this variable?
+B) The cases are given in time order. Prepare a time plot for the number of copiers serviced. What does your plot show?
+C) Prepare a stem-and-leaf plot of the residuals. Are there any noteworthy features in this plot?
+D) Prepare residual plots of $e_i$ versus $\hat{Y}_i$ and $e_i$ verses $X_i$ on separate graphs. Do these plots provide the same information? What departures from regression model (2.1) can be studied from these plots? State your findings.
+E) Prepare a normal probability plot of the residuals. Also obtain the coefficient of correlation between the ordered residuals and their expected values under normality. Does the normality assumption appear to be tenable here? Use table B.6 and $\alpha$ = .10.
+F) Prepare a time plot of the residuals to ascertain whether the error terms are correlated over time. What is your conclusion?
+G) Assume that (3.10) is applicable and conduct the Breusch-Pagan test to determine whether or not the error variance varies with the level of $X$. Use $\alpha$ = 0.05. State the alternatives, decision rule and conclusion.
+H) Information is given below on two variables not included in the regression model, namely, mean operational age of copiers serviced on the call($X_2$, in months) and years of experience of the service person making the call($X_3$). Plot  the residuals against $X_2$ and $X_3$ on separate graphs to ascertain whether the model can be improved by including either or both of these variables. What do you conclude?
+
+</div>
+</div>
+
+<div style="padding-left:70px;">
+<!-- Type Problem here -->
+
+### Solution
+<!-- Type Solution here -->
+
+```{r}
+### Work
+## Part A
+# plot(V1 ~ V2, data=Ex3.4)
+## Part B
+# Ex3.4.lm <- lm(V1 ~ V2, data=Ex3.4)
+# plot(Ex3.4.lm$res ~ time(V2), data=Ex3.4)
+## Part C
+# stem(Ex3.4.lm$residuals)
+## Part D
+# plot(Ex3.4.lm$residuals ~ Ex3.4.lm$fitted.values, data=Ex3.4)
+# plot(Ex3.4.lm$residuals ~ V2, data=Ex3.4)
+## Part E
+# 
+## Part F
+#
+## Part G
+#
+## Part H
+#
+```
+
+A) In this plot we are able to see if there are any outliers, which there are not, and how the data are spread throughout the plot. This shows that the data appear to have a linear relationship.
+
+B) The time plot above shows that the residuals are independent of the time in which the observation was obtained.
+
+C) When looking at the stem-and-leaf plot above, we see two things that are noteworthy, at least as I am learning, about the plot. First we have a little bit of a skew and then we have a small gap between -1 to -2. Then at -2 we have two observations. The data appears to be normal, and I know that with more observations, we would find that.
+
+D) I think that I made the correct graphs, but I do not understand the answer to this question.
+
+E) 
+
+F)
+
+G)
+
+H)
+
+
+
+</div>
+
+<!-- P R O B L E M    E N D S -->
+
+
+
+<!-- P R O B L E M     B E G I N S --> 
+
+<div style="padding-left:45px;">
+## Exercise 3.5 {0}
+</div>
+
+<div style="padding-left:60px;">
+### <a href="javascript:showhide('Problem 3.5')">Problem 3.5</a>
+
+<div id="Problem 3.5" style="display:none;">
+
+```{r, include=FALSE}
+Ex3.5 <- read.table('http://www.stat.ufl.edu/~rrandles/sta4210/Rclassnotes/data/textdatasets/KutnerData/Chapter%20%201%20Data%20Sets/CH01PR21.txt', header=FALSE)
+```
+
+Refer to AIRFREIGHT BREAKAGE problem (1.21).
+
+A) Prepare a dot plot for the number of transfers $X_i$. Does the distribution of number of transfers appear to be asymmetrical?
+B) The cases are given in time order. Prepare a time plot for the number of transfers. Is any systematic pattern evident in your plot? Discuss.
+C) Obtain the residuals $e_i$ and prepare a stem-and-leaf plot of the residuals. What information is provided by your plot?
+D) Plot the residuals $e_i$ against $X_i$ to ascertain whether any departures from regression model (2.1) are evident. What is your conclusion?
+E) Prepare a normal probability plot of the residuals. Also obtain the coefficient of correlation between the ordered residuals and their expected values under the normality to ascertain whether the normality assumption is reasonable here. Use table B.6 and $\alpha$ = 0.01. What do you conclude?
+F) Prepare a time plot of the residuals. What information is provided by your plot?
+G) Assume that (3.10) is applicable and conduct the Breusch-Pagan test to determine whether or not the error variance varies with the level of $X$. Use $\alpha$ = .10. State the alternatives, decision rule and conclusion. Does your conclusion support your preliminary findings in part (d)?
+
+</div>
+</div>
+
+<div style="padding-left:70px;">
+<!-- Type Problem here -->
+
+### Solution
+<!-- Type Solution here -->
+
+```{r}
+### Work
+## Part A
+#
+## Part B
+#
+## Part C
+#
+## Part D
+#
+## Part E
+#
+## Part F
+#
+## Part G
+#
+```
+
+
+</div>
+
+<!-- P R O B L E M    E N D S -->
+
+
+
+<!-- P R O B L E M     B E G I N S --> 
+
+<div style="padding-left:45px;">
+## Exercise 3.13 {3}
+</div>
+
+<div style="padding-left:60px;">
+### <a href="javascript:showhide('Problem 3.13')">Problem 3.13</a>
+
+<div id="Problem 3.13" style="display:none;">
+
+Refer to COPIER MAINTENANCE problem 1.20.
+
+A) What are the alternative conclusions when testing for lack of fit of a linear regression function?
+B) Perform the test indicated in part (a). Control the risk of Type I error at 0.05. State the decision rule and conclusion.
+C) Does the test in part (b) detect other departures from regression model (2.1), such as lack of constant variance or lack of normality in the error terms? Could the results of the test of lack of fit be affected by such departures? Discuss.
+
+</div>
+</div>
+
+<div style="padding-left:70px;">
+<!-- Type Problem here -->
+
+### Solution
+<!-- Type Solution here -->
+
+A) 
+$$
+ H_o: E(Y) = \beta_0 + \beta_1 X
+$$
+$$
+ H_a: E(Y) \ {\neq} \ \beta_0 + \beta_1 X
+$$
+B) After running the lack of fit, we see that the regression is a good fit because the p-value for the Lack of Fit is 0.4766 which means that we fail to reject that the data is a good fit for the regression.
+```{r}
+## lack of fit for Ex3.13
+#Ex3.13.lm <- lm(V1 ~ V2, data=Ex3.4)
+#pureErrorAnova(Ex3.13.lm)
+```
+ 
+C) The lack of fit test only tests to see if the linear model would be a good representation of the data, or in other words that it can make inference on the data. It actually assumes that $X$ is independent, normally distributed and that there is constant variance. This shows that the lack of fit test simply has one function and that is stated in A)
+
+</div>
+
+<!-- P R O B L E M    E N D S -->
+
+
+</div>

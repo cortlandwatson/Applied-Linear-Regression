@@ -1,0 +1,291 @@
+---
+title: "HardWork2/2"
+author: "Cortland Watson"
+output: 
+  html_document:
+    theme: flatly
+    toc: true
+    toc_float: true
+    code_folding: hide
+---
+
+```{r, include=FALSE}
+library(mosaic)
+library(pander)
+```
+
+
+<script type="text/javascript">
+ function showhide(id) {
+    var e = document.getElementById(id);
+    e.style.display = (e.style.display == 'block') ? 'none' : 'block';
+ }
+</script>
+
+
+<hr />
+
+# Reading {17}
+<div style="padding-left:45px;">
+| Section  | Points |
+|----------|--------|
+|     2.7  |     8    |      
+| 2.8      |      4  |    
+|    2.9   |       3  |
+|       2.10|       2 |
+
+
+</div>
+
+<hr/>
+<br/>
+
+
+# Theory {5}
+
+<!-- P R O B L E M     B E G I N S --> 
+
+<div style="padding-left:45px;">
+## Exercise 2.33
+
+</div>
+
+<div style="padding-left:60px;">
+
+### <a href="javascript:showhide('Problem 2.33')">Problem 2.33</a>
+
+<div id="Problem 2.33" style="display:none;">
+
+In developing empirically a cost function from observed data on a complex chemical experiment, an analyst employed normal error regression model (2.1). $B_0$ was interpreted here as the cost of setting up the experiment. The analyst hypothesized that this cost should be $7.5 thousand and wished to test the hypothesis by means of a general linear test.
+
+A) Indicate the alternative conclusions for the test.
+B) Specify the full and reduced models.
+C) Without additional information, can you tell what the quantity $df_R$ - $df_F$ in test statistic (2.70) will equal in the analyst's test? Explain.
+
+</div>
+</div>
+
+<div style="padding-left:70px;">
+<!-- Type Problem here -->
+
+### Solution
+<!-- Type Solution here -->
+
+A) I do not know what this means....
+B) Full = $B_0$ + $B_1$$X_i$ + $E_i$ Reduced = 7500 + $B_1$$X_i$ + $E_i$
+C) $df_R$ - $df_F$ = 1 This is what happens when we have two parameters in the full model and just one in the reduced model, considering that we have $B_0$ set at $7.5 thousand.
+
+</div>
+
+<!-- P R O B L E M    E N D S -->
+
+
+
+<!-- P R O B L E M     B E G I N S --> 
+
+<div style="padding-left:45px;">
+## Exercise 2.55
+</div>
+
+<div style="padding-left:60px;">
+
+### <a href="javascript:showhide('Problem 2.55')">Problem 2.55</a>
+
+<div id="Problem 2.55" style="display:none;">
+
+Derive the expression for SSR in (2.51).
+
+$SSR$ = $b^2_1$$\sum$($X_1$ - $\bar{X}$)^2
+
+</div>
+</div>
+
+<div style="padding-left:70px;">
+<!-- Type Problem here -->
+
+### Solution
+<!-- Type Solution here -->
+
+$SSR$ = $b^2_1$$\sum$($X_1$ - $\bar{X}$)^2 
+
+$\sqrt{SSR}$=$b_1$$\sum$($X_1$ - $\bar{X}$)
+
+</div>
+
+<!-- P R O B L E M    E N D S -->
+
+
+<hr/>
+<br/>
+
+
+# Application {14}
+
+<!-- P R O B L E M     B E G I N S --> 
+
+<div style="padding-left:45px;">
+## Exercise 2.25
+</div>
+
+<div style="padding-left:60px;">
+
+### <a href="javascript:showhide('Problem 2.25')">Problem 2.25</a>
+
+<div id="Problem 2.25" style="display:none;">
+
+```{r, include=FALSE}
+Ex2.25 <- read.table('http://www.stat.ufl.edu/~rrandles/sta4210/Rclassnotes/data/textdatasets/KutnerData/Chapter%20%201%20Data%20Sets/CH01PR20.txt', header=FALSE)
+```
+
+Refer to AIRFREIGHT BREAKAGE problem 1.21.
+
+A) Set up the ANOVA table. Which elements are additive?
+B) Conduct an $F$ test to decide whether or not there is a linear association between the number of times a carton is transferred and the number of broken ampules; control the $\alpha$ risk at 0.05. State the alternatives, decision rule and conclusion.
+C) Obtain the $t$ * statistic for the test in part (b) and demonstrate numerically its equivalence to the $F$ * statistic obtained in part (b).
+D) Calculate $R^2$ and $r$. What proportion of the variation in $Y$ is accounted for by introducing $X$ into the regression model?
+
+</div>
+</div>
+
+<div style="padding-left:70px;">
+<!-- Type Problem here -->
+
+### Solution
+<!-- Type Solution here -->
+
+```{r}
+### Part A
+# pander(summary(Ex2.25.lm))
+# pander(anova(Ex2.25.lm))
+
+### Part B
+#$MSE$ = $SSE$/n-2
+#$MSE$ = 3416/43 = 79.44186
+#$MSR$ = $SSR$/1
+#$MSR$ = 76960/1 = 76960
+#$F$ * = $MSR$/$MSE$
+#$F$ * = 76960/79.44186 = 968.7588
+
+### Part C
+#$t$ * = $\sqrt{$F$}$
+#$t$ * = $\sqrt{968.7588}$ = 31.12
+
+## Part D
+# $R^2$ = $SSR$/$SSTO$
+# $SSTO$ = $SSR$ + $SSE$
+# $SSTO$ = 76960+3416 = 80376
+# $R^2$ = 76960/80376 = 0.9574998
+# $r$ = $\sqrt{$R^2$}$
+# $r$ = sqrt(0.9574998) = 0.9785192
+```
+
+A) In the ANOVA table, the $df$ (1, 43) are additive. The $SSE$ (3416) and the $SSR$ (76960) are not additive.
+B) I have not figured this one out yet
+C) $t$ * = $\sqrt{968.7588}$ = 31.12
+D) $R^2$ = 0.9574998  $r$ = 0.9785192
+
+</div>
+
+<!-- P R O B L E M    E N D S -->
+
+
+
+<!-- P R O B L E M     B E G I N S --> 
+
+<div style="padding-left:45px;">
+## Exercise 2.26
+</div>
+
+<div style="padding-left:60px;">
+
+### <a href="javascript:showhide('Problem 2.26')">Problem 2.26</a>
+
+<div id="Problem 2.26" style="display:none;">
+
+```{r, include=FALSE}
+Ex2.26 <- read.table('http://www.stat.ufl.edu/~rrandles/sta4210/Rclassnotes/data/textdatasets/KutnerData/Chapter%20%201%20Data%20Sets/CH01PR22.txt', header=FALSE)
+```
+
+Refer to PLASTIC HARDNESS problem (1.22).
+
+A) Set up the ANOVA table.
+B) Test by means of an $F$ test whether or not there is a linear association between the harness of the plastic and the elapsed time. Use $\alpha$ = 0.01. State the alternatives, decision rule, and conclusion.
+C) Plot the deviations $Y_i$ - $\hat{Y}_i$ against $X_i$ on a graph. Plot the deviations $\hat{Y}_i$ - $\bar{Y}$ against $X_i$ on another graph, using the same scales as for the first graph. From your two graphs, does $SSE$ or $SSR$ appear to be the larger component of $SSTO$? What does this imply about the magnitude of $R^2$?
+D) Calculate $R^2$ and $r$.
+
+</div>
+</div>
+
+<div style="padding-left:70px;">
+<!-- Type Problem here -->
+
+### Solution
+<!-- Type Solution here -->
+
+A)
+```{r}
+Ex2.26.lm <- lm(V1 ~ V2, data=Ex2.26)
+pander(anova(Ex2.26.lm))
+```
+
+B)I have not figured out how to do this one yet, or C)
+C)
+D) $R^2$= 0.9731 $r$= 0.9864583
+
+</div>
+
+<!-- P R O B L E M    E N D S -->
+
+
+
+<!-- P R O B L E M     B E G I N S --> 
+
+<div style="padding-left:45px;">
+## Exercise 2.29
+</div>
+
+<div style="padding-left:60px;">
+
+### <a href="javascript:showhide('Problem 2.29')">Problem 2.29</a>
+
+<div id="Problem 2.29" style="display:none;">
+
+```{r, include=FALSE}
+Ex2.29 <- read.table('http://www.stat.ufl.edu/~rrandles/sta4210/Rclassnotes/data/textdatasets/KutnerData/Chapter%20%201%20Data%20Sets/CH01PR27.txt', header=FALSE)
+```
+
+
+Refer to MUSCLE MASS problem (1.27).
+
+A) Plot the deviations $Y_i$ - $\hat{Y}$ against $X_i$ on one graph. Plot the deviations $\hat{Y}$ - $\bar{Y}$ against $X_i$ on another graph, using the same scales as in the first graph. From your two graphs, does $SSE$ or $SSR$ appear to be the larger component of $SSTO$? What does this imply about the magnitude of $R^2$?
+B) Set up the ANOVA table.
+C) Test whether or not $B_1$ = 0 using an $F$ test with $\alpha$ = 0.05. State the alternatives, decision rule and conclusion.
+D) What proportion of the total variation in muscle mass remains "unexplained" when age is introduced into the analysis? Is this proportion relatively small or large? 
+E) Obtain $R^2$ and $r$.
+
+</div>
+</div>
+
+<div style="padding-left:70px;">
+<!-- Type Problem here -->
+
+### Solution
+<!-- Type Solution here -->
+
+A)I do not know how to do this one
+B)
+```{r}
+Ex2.29.lm <- lm(V1 ~ V2, data=Ex2.29)
+pander(anova(Ex2.29.lm))
+```
+
+C) .7501 and this is pretty good depending on where you are studying, in psychology this is amazing, but in other sciences, we woudl like to see much better.
+D) I do not know how to do this one either.
+E) 0.7501=$R^2$ $r$=0.8660831
+
+</div>
+
+<!-- P R O B L E M    E N D S -->
+
+
+</div>

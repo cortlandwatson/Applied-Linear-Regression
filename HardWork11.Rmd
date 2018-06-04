@@ -1,0 +1,164 @@
+---
+title: "Hard Work 11"
+output: 
+  html_document:
+    theme: flatly
+    css: style.css
+    toc: true
+    toc_float: true
+    code_folding: hide
+---
+
+<style>
+
+</style>
+
+## Instructions
+
+1. Study some sections from Chapter 14 "Nonlinear Regression."
+
+2. Attempt and submit at least <span id=points style="padding-left:0px;">{50}</span> Hard Work Points by Saturday at 11:59 PM.    
+
+
+## Reading Points 10 
+
+<div style="padding-left:20px;">
+
+List the Section(s) you chose to study and how many points you feel you deserve for your reading.
+
+| Section | Points Earned | Points Possible |
+|---------|---------------|-----------------|
+|14.1     |       1        | <span id=rrecpoints>{?}</span> |
+|14.2     |        2       | <span id=rrecpoints>{?}</span> |
+|14.3     |         3      | <span id=rrecpoints>{?}</span> |
+|14.6     |     2          | <span id=rrecpoints>{?}</span> |
+|14.7     |      2         | <span id=rrecpoints>{?}</span> |
+
+
+<!-- Add more rows to the above table if necessary. -->
+
+
+</div>
+
+## Theory Points <span id=headpoints>{?}</span>
+
+<div style="padding-left:20px;">
+
+If you choose to do any problems that are theoretical in nature, list them here along with the number of points you are claiming for that problem.
+
+### Problem 14.5
+
+### Problem 14.6
+
+</div>
+
+## Application Points 
+
+<div style="padding-left:20px;">
+
+<a id=datalink style="font-size:.9em;" target="_blank" href=http://www.stat.ufl.edu/~rrandles/sta4210/Rclassnotes/data/textdatasets/index.html>Data Files</a>
+
+<div style="padding-left:20px;">
+
+| Problem | Points Earned | Points Possible |
+|---------|---------------|-----------------|
+|14.7     |               | <span id=rrecpoints>{?}</span> |
+|14.8     |               | <span id=rrecpoints>{?}</span> |
+|14.9     |               | <span id=rrecpoints>{?}</span> |
+
+
+### Problem 14.7 <span id=recpoints>{?}</span> 
+
+The board of directors of a professional association conducted a random sample survey of 30 members to assess the effects of several possible amounts of dues increase. The sample results follow. $X$ denotes the dollar increase in annual dues posited in the survey interview, and $Y$ = 1 if the interviewee indicated that the membership will not be renewed at that amount of dues increase and 0 if the membership will be renewed. Logistic regression model (14.20) is assumed to be appropriate.
+
+A) Find the maximum likelihood estimates of $\beta_0$ and $\beta_1$. State the fitted response function.
+B) Obtain a scatter plot of the data with both the fitted logistic response function from part (a) a lowess smooth superimposed. Does the fitted logistic response function appear to fit well?
+C) Obtain exp($b_1$) and interpret this number.
+D) What is the estimated probability that association members will not renew their membership if the dues are increased by $40?
+E) Estimate the amount of dues increase for which 75 percent of the members are expected not to renew their association membership.
+
+```{r, include=FALSE}
+# Code to read in a Chapter 14 Problem
+
+p14.7 <- read.table("http://www.stat.ufl.edu/~rrandles/sta4210/Rclassnotes/data/textdatasets/KutnerData/Chapter%2014%20Data%20Sets/CH14PR07.txt", header=FALSE)
+
+colnames(p14.7)
+colnames(p14.7) <- c("Y","X1")
+
+head(p14.7)
+
+```
+
+WORK
+
+Part A
+
+```{r, include=FALSE}
+dues.glm <- glm(Y ~ X1, data = p14.7, family=binomial)
+summary(dues.glm)
+
+b <- round(dues.glm$coefficients, 4)
+```
+
+Fitted response function.
+
+$$
+E{Y_i}=(exp(`r b[1] ` + `r b[2] `X_i))/(1+exp(`r b[1] ` + `r b[2] `X_i))
+$$
+
+Part B
+
+```{r}
+plot(Y~X1, data=p14.7)
+curve(exp(b[1] + b[2]*x)/(1+exp(b[1] + b[2]*x)), from=28, to=52, add=TRUE)
+lines(lowess(p14.7$Y ~ p14.7$X1), col="green")
+```
+
+The above graphic shows the scatter plot with the fitted logistic response and a lowess smooth line. The fitted is black and the lowess is green. It appears that the logistic fits the data, but it looks to be pulled on both ends further than the lowess. It is not a perfect fit, but works.
+
+Part C
+
+For this part we are trying to find what the interpretation of $b_1$ are. To do this we take take the exponential function of $b_1$.
+
+```{r}
+exp(0.12508)
+```
+
+We get 1.133 which means that the odds of the response variable increase 13.3% with each unit increase of X.
+
+Part D
+
+To find the probability of a member renewing their membership if the dues are increased by $40 we must work backwards. 
+
+$$
+exp[40(0.12508)]= NewOdds
+$$
+
+This means that the odds of not renewing increase over 148-fold by increasing dues by $40.
+
+Part E
+
+
+
+### Problem 14.8
+
+### Problem 14.9
+
+
+
+</div>
+
+
+
+<footer>
+</footer>
+
+
+
+ 
+
+ 
+
+ 
+
+ 

@@ -1,0 +1,29 @@
+---
+title: "Validating a Model"
+output: html_document
+---
+
+```{r}
+credits <- read.csv("Credits.csv")
+credits2 <- read.csv("Credits2.csv")
+
+# Validating a Linear Regression
+simple.lm <- lm(CumulativeEarnedCredits ~ ACTConversion, data=credits)
+summary(simple.lm)
+
+newfitted <- predict(simple.lm, credits2, interval="prediction")
+
+plot(newfitted[,1] ~ credits2$CumulativeEarnedCredits)
+
+
+# Validating a Logistic Regression
+simple.log <- glm(CumulativeEarnedCredits > 140 ~ ACTConversion, data=credits, family="binomial")
+summary(simple.log)
+
+newProbs <- predict(simple.log, credits2, type="response")
+
+table(PredOVER = newProbs > .4, ActualOVER = credits2$CumulativeEarnedCredits > 140)
+
+pcc <- (130+92)/(130+93+117+92)
+
+```

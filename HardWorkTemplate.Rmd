@@ -1,0 +1,179 @@
+---
+title: "HardWork7"
+author: "Cortland Watson"
+output: 
+  html_document:
+    theme: flatly
+    toc: true
+    toc_float: true
+    code_folding: hide
+---
+
+```{r, include=FALSE}
+library(mosaic)
+library(pander)
+library(lmtest)
+library(car)
+library(alr3)
+```
+
+
+<script type="text/javascript">
+ function showhide(id) {
+    var e = document.getElementById(id);
+    e.style.display = (e.style.display == 'block') ? 'none' : 'block';
+ }
+</script>
+
+<hr />
+
+# Reading {21/21}
+<div style="padding-left:45px;">
+| Section  | Points |
+|----------|--------|
+|7.1       | 5/5         |      
+| 7.2      |    5/5      |    
+|    7.3   |       4/4   |
+| 8.1      |        7/7  |
+
+
+</div>
+
+<hr/>
+<br/>
+
+<!-- #########################  Theory   ############################ -->
+
+# Theory {1/4}
+
+<!-- P R O B L E M     B E G I N S --> 
+
+<div style="padding-left:45px;">
+## Exercise  7.2 {1/1}
+
+</div>
+
+<div style="padding-left:60px;">
+### <a href="javascript:showhide('Problem ')">Problem </a>
+
+<div id="Problem " style="display:none;">
+
+
+</div>
+</div>
+
+<div style="padding-left:70px;">
+<!-- Type Problem here -->
+
+### Solution
+<!-- Type Solution here -->
+
+
+</div>
+
+<!-- P R O B L E M    E N D S -->
+
+
+<hr/>
+<br/>
+
+<!-- ######################### Application ############################ -->
+
+# Application {25/35}
+
+<!-- P R O B L E M     B E G I N S --> 
+
+<div style="padding-left:45px;">
+## Exercise {}
+</div>
+
+<div style="padding-left:60px;">
+### <a href="javascript:showhide('Problem ')">Problem </a>
+
+<div id="Problem " style="display:none;">
+
+```{r, include=FALSE}
+Ex3.16 <- read.table('http://www.stat.ufl.edu/~rrandles/sta4210/Rclassnotes/data/textdatasets/KutnerData/Chapter%20%203%20Data%20Sets/CH03PR15.txt')
+```
+
+Oh Yeah!
+
+</div>
+</div>
+
+<div style="padding-left:70px;">
+<!-- Type Problem here -->
+
+### Solution
+<!-- Type Solution here -->
+
+</div>
+
+<!-- P R O B L E M    E N D S -->
+
+
+
+<!-- P R O B L E M     B E G I N S --> 
+
+<div style="padding-left:45px;">
+## Exercise {}
+</div>
+
+<div style="padding-left:60px;">
+### <a href="javascript:showhide('Problem ')">Problem </a>
+
+<div id="Problem " style="display:none;">
+
+```{r, include=FALSE}
+Ex3.17 <- read.table('http://www.stat.ufl.edu/~rrandles/sta4210/Rclassnotes/data/textdatasets/KutnerData/Chapter%20%203%20Data%20Sets/CH03PR17.txt')
+```
+
+Oh Yeah!
+
+</div>
+</div>
+
+<div style="padding-left:70px;">
+<!-- Type Problem here -->
+
+### Solution
+<!-- Type Solution here -->
+
+</div>
+
+<!-- P R O B L E M    E N D S -->
+
+
+<!-- P R O B L E M     B E G I N S --> 
+
+<div style="padding-left:45px;">
+## Exercise {}
+</div>
+
+<div style="padding-left:60px;">
+### <a href="javascript:showhide('Problem ')">Problem </a>
+
+<div id="Problem " style="display:none;">
+
+```{r, include=FALSE}
+Ex3.18 <- read.table('http://www.stat.ufl.edu/~rrandles/sta4210/Rclassnotes/data/textdatasets/KutnerData/Chapter%20%203%20Data%20Sets/CH03PR18.txt')
+```
+
+Oh Yeah!
+
+</div>
+</div>
+
+<div style="padding-left:70px;">
+<!-- Type Problem here -->
+
+### Solution
+<!-- Type Solution here -->
+
+</div>
+
+<!-- P R O B L E M    E N D S -->
+
+
+
+</div>

@@ -1,0 +1,167 @@
+---
+title: "Hard Work 8"
+output: 
+  html_document:
+    theme: flatly
+    css: style.css
+    toc: true
+    toc_float: true
+    code_folding: hide
+---
+
+<style>
+
+```{r, include=FALSE}
+library(mosaic)
+library(pander)
+library(lmtest)
+library(car)
+library(alr3)
+library(leaps)
+library(rgl)
+library(qpcR)
+```
+
+
+</style>
+
+## Instructions
+
+1. Study Sections 10.1 and 9.1-9.4 -- "Added Variable Plots" and "Criteria for Model Selection."
+
+2. Attempt and submit at least <span id=points style="padding-left:0px;">{36}</span> Hard Work Points by Saturday at 11:59 PM.    
+<span id=note>Over <span id=points style="padding-left:0px;">{50}</span> gets you {+1} Final Exam Point.</span>    
+
+##Total {28}
+
+## Reading Points <span id=headpoints>{21} Earned</span>
+
+<div style="padding-left:20px;">
+
+| Section | Points Earned | Points Possible |
+|---------|---------------|-----------------|
+| 10.1    |4               | <span id=rrecpoints>{4}</span> |
+| 9.1     |   3            | <span id=rrecpoints>{3}</span> |
+| 9.2     |    4           | <span id=rrecpoints>{4}</span> |
+| 9.3     |     6          | <span id=rrecpoints>{6}</span> |
+| 9.4     |      4         | <span id=rrecpoints>{4}</span> |
+
+</div>
+
+## Theory Points <span id=headpoints>{0} Earned</span>
+
+
+## Application Points <span id=headpoints>{7} Earned</span>
+
+<div style="padding-left:20px;">
+
+<a id=datalink style="font-size:.9em;" target="_blank" href=http://www.stat.ufl.edu/~rrandles/sta4210/Rclassnotes/data/textdatasets/index.html>Data Files</a>
+
+### Problem 9.9 <span id=points>{3}</span> 
+
+```{r}
+# Code to read in the data
+# It has to be merged from the 1.20 and 8.15 data files.
+p9.9 <- read.table("http://www.stat.ufl.edu/~rrandles/sta4210/Rclassnotes/data/textdatasets/KutnerData/Chapter%20%206%20Data%20Sets/CH06PR15.txt", header=FALSE)
+
+# Give it nice column names for conevience:
+colnames(p9.9) <- c("Y","X1","X2","X3")
+
+# Show the first part of the data:
+#head(p9.9)
+
+source("makeTable9.3.R")
+```
+
+The hospital administrator wishes to determine the best subset of predictor variables for predicting patient satisfaction.
+
+A) Indicate which subset of predictor variables you would recommend as best for prediction patient satisfaction according to each of the following criteria: (1) $R^2_{a,p}$, (2) $AIC_p$, (3) $C_p$, (4) $PRESS_p$. Support your recommendations with appropriate graphs.
+
+B) Do the four criteria in part (a) identify the same best subset? Does this always happen?
+
+C) Would forward stepwise regression have any advantages here as a screening procedure over all-possible-regressions procedure?
+
+####Solution
+
+A) The following table shows what would be the best subset out of the data set using the criteria of (1) $R^2_{a,p}$, (2) $AIC_p$, (3) $C_p$, (4) $PRESS_p$, given that we have four parameters.
+
+```{r}
+pander(makeTable9.3(p9.9))
+```
+I would suggest using $X1$ and $X3$ using the criteria for $R^2_{a,p}$. I would suggest using $X1$ given criteria for $AIC_p$. I would suggest $X1$ and $X3$ given criteria for $C_p$. I would suggest $X1$ and $X3$ given criteria for $PRESS_p$.
+
+B) With the information found in part(A) we see that three of the four suggest the same subset. This is interesting considering that we are not always able to find that when running the table. This is really good though as we see a common opinion that this data subset of $X1$ and $X3$ is the best that we have been given. 
+
+C) The stepwise regression is made specifically for data sets that have a lot of different possible parameters. Page 361 says that stepwise comes in handy when a "pool of potential $X$ variables is very large". Thus, a stepwise would not be a good choice, but maybe the pairs function.
+
+### Problem 9.10 <span id=recpoints>{2}</span> 
+
+```{r}
+# Code to read in the data
+# It has to be merged from the 1.20 and 8.15 data files.
+p9.10 <- read.table("http://www.stat.ufl.edu/~rrandles/sta4210/Rclassnotes/data/textdatasets/KutnerData/Chapter%20%209%20Data%20Sets/CH09PR10.txt", header=FALSE)
+
+# Give it nice column names for conevience:
+colnames(p9.10) <- c("Y","X1","X2","X3","X4")
+
+# Show the first part of the data:
+#head(p9.10)
+```
+
+A personal officer in a governmental agency administered four newly developed aptitude tests to each of the 25 applicants for entry-level clerical positions in the agency. For the purpose of the study, all 25 applicants were accepted for positions irrespective of their test scores. After a probationary period, each applicant was rated for proficiency on the job. The scores on the four tests and the job proficiency score for the 25 employees are the data set.
+
+A) Prepare separate stem and leaf plots of the test scores for each of the four newly developed aptitude tests. Are there any noteworthy features in these plots? Comment.
+
+C) Fit the multiple regression function containing all four predictior variables as first-order terms. Does it appear that all predictor variables should be retained?
+
+####Solution
+
+A) The stem and leaf plots below help to show the data in for all of the different observations. This allows us to also see how the data is distributed. It appears that the only normally distributed test would be that of the first ($X_1$). The other interesting information is that the other three are right skewed.
+```{r}
+stem(p9.10$X1)
+stem(p9.10$X2)
+stem(p9.10$X3)
+stem(p9.10$X4)
+```
+
+C) The below information shows us that we are looking at different variables to see how they contribute when all other factors are held constant. It appears that we are able to see that X2 is the only test that does not contribute while other factors are held to be constant.
+```{r}
+p9.10.lm <- lm(Y ~ X1+X2+X3+X4, data=p9.10)
+pander(summary(p9.10.lm))
+```
+
+
+### Problem 9.11 <span id=recpoints>{2}</span> 
+
+```{r}
+# Use the data p9.10 for this one.
+```
+
+A) Using only first-order terms for the predictor variables in the pool of potential $X$ variables, find the best subset regression models according to the $R^2_{a,p}$ criterion.
+
+B) Since there is relatively little difference in $R^2_{a,p}$ for the four best subset models, what other criteria would you use to help in the selection of the best model? Discuss.
+
+####Solution
+A) HAving run the makeTable command I was able to find what subset would be best for running a regression model on the given data. The data below suggests that $R^2_{a,p}$ wants us to use $X1,X3,X4$.
+```{r}
+pander(makeTable9.3(p9.10))
+```
+
+B) Given that there is not a lot of difference between the different subsets in the above graphic, I would use another criterian. I would choose that of $PRESS_p$ as it measures how well the use of the fitted values can predict the observed responses. This enables us to see how effective our model is. 
+
+</div>
+
+
+
+<footer>
+</footer>
+
+
+
+ 
+
+ 
+
+ 
+
+ 

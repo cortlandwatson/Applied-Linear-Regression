@@ -1,0 +1,272 @@
+---
+title: "Project 3 -- Regression Battleship"
+author: "Cortland Watson"
+output: 
+  html_document:
+    theme: flatly
+    css: style.css
+    toc: true
+    toc_float: true
+    code_folding: hide
+---
+
+## Instructions
+
+*By Tuesday at 11:59 PM*    
+<div style="padding-left:15px;">
+1. Create your own synthetic dataset for Brother Saunders to solve using the guide below. Submit a csv file of this dataset by Tuesday at 11:59 PM to the I-Learn Dropbox. 
+</div>
+
+*By Thursday at 11:59 PM*    
+<div style="padding-left:15px;">
+2. Analyze Brother Saunders's dataset in order to make your prediction of his true model that was used to create the data. Submit this by Thursday at 11:59 PM. 
+</div>
+
+*By Saturday at 11:59 PM*    
+<div style="padding-left:15px;">
+3. After you recieve Brother Saunders's guess at your true model that you used to create your data, review what worked and what didn't about his approach to uncovering your model in a written evaluation of his work.
+</div>
+
+## Step 1. Creating your Data
+
+There are only three general rules that you must follow in the creation of your dataset.
+
+1. Your dataset must have one "Y" variable and 20 "X" variables labeled as "Y", "X1", ..., "X20". 
+
+2. Your response variable $Y$ must come from a linear regression model that satisfies:    
+$$
+  Y_i = \beta_0 + \beta_1 X_{i1} + \ldots + \beta_{p-1}X_{i,p-1} + \epsilon_i  
+$$
+where $\epsilon_i \sim N(0,\sigma^2)$ and $p\leq 21$.
+
+3. All $X$-variables that were used to create $Y$ are contained in your dataset. 
+
+```{r}
+beta0 = 49.3845
+beta1 = -0.102524
+beta2 = 6.548
+beta3 = 16.221
+beta4 = -9.2021
+
+N = 28
+
+X1 = rnorm(28, 5, sqrt(5)) 
+     
+X2 = rnorm(28, 6, sqrt(7)) 
+
+X3 = rnorm(28, 3, 1/9) 
+  
+X4 = rnorm(28, 59, 2) 
+
+X5 = rnorm(28, 58, sqrt(5)) 
+  
+X6 = rnorm(28, 16, sqrt(11))
+  
+X7 = rnorm(28, 0.02, 0.005) 
+  
+X8 = rnorm(28, 5, sqrt(3)) 
+  
+X9 = rbeta(28, 1, 1)
+  
+X10 = rbeta(28, 8, 2)
+  
+X11 = rpois(28, 3.5)
+  
+X12 = rpois(28, 8)
+  
+X13 = X1^2
+  
+X14 = X5^2
+  
+X15 = sqrt(X3)
+  
+X16 = rep(c(4,2), each=28, length=28)
+  
+X17 = rep(c(0,1.5), each=28, length=28)
+  
+X18 = sample(c(0,1), 28, replace=TRUE)
+  
+X19 = sample(c(0,2), 28, replace=TRUE)
+  
+X20 = sample(c(0,1.7), 28, replace=TRUE)
+  
+epsilon = rnorm(28, 0, 18) 
+
+Y <- beta0 + beta1*X4 + beta2*X6 + beta3*X20 + beta4*X7 + epsilon
+
+CWdata <- data.frame(Y = Y,
+                     X1 = X7, #used
+                     X2 = X19,
+                     X3 = X3, 
+                     X4 = X15, 
+                     X5 = X11, 
+                     X6 = X1,
+                     X7 = X17,
+                     X8 = X6, ## used
+                     X9 = X12,
+                     X10 = X10,
+                     X11 = X18,
+                     X12 = X20, #used
+                     X13 = X2,
+                     X14 = X16,
+                     X15 = X8,
+                     X16 = X13,
+                     X17 = X5,
+                     X18 = X9,
+                     X19 = X4,  ## used
+                     X20 = X14)
+
+
+```
+
+## Step 2. Analyzing Brother Saunders's Data
+
+Brother Saunders followed the same 3 rules that were outlined above in the creation of his data. You need to analyze his data to try to make a guess at his true regression model. Document your approach as best you can and state your final predictions here. 
+
+The csv file of Brother Saunders's dataset will be available Wednesday morning at 12:00 AM.
+
+```{r}
+#sdata1 <- read.csv("C:/Users/Cortland/Downloads/sdata.csv")
+
+#First I went through all the variable to see which of the variables has most to offer. I found that X10 has the most to offer, at the moment.
+
+#slm <- lm(Y ~ X10, data=sdata1)
+#summary(slm)
+
+#Then I went in and tried to see what other variables can add to this model. It appears that X20 has something to add.
+
+#plot(slm$residuals ~ X20, data=sdata1)
+
+#This suggests a squared term. To include the squared term, I will go back and begin the model having included the first model of X20, then to include the powered term. Now I am trying to figure out how to find the pattern. To do this I am running a code to see the different groups.
+
+#plot(Y ~ X20, data=sdata1, col=as.factor(X3))
+
+# This helps to guide us to see that there are two different groups that enable us to see X3 as a variable that seperate. Now to present the two groups and try to fit models to the individual groups that lie therein.
+
+#plot(Y ~ X20, data=subset(sdata1,X3==0))
+#plot(Y ~ X20, data=subset(sdata1,X3==1))
+
+#slm2 <- lm(Y ~ X20 + I(X20^2), data=subset(sdata1,X3==1))
+#summary(slm2)
+#plot(Y ~ X20, data=subset(sdata1,X3==1))
+#b <- slm2$coefficients
+#curve(b[1]+x*b[2]+x^2*b[3], add=TRUE)
+
+#slm3 <- lm(Y ~ X20 + I(X20^2), data=subset(sdata1,X3==0))
+#summary(slm3)
+#plot(Y ~ X20, data=subset(sdata1,X3==0))
+#b <- slm3$coefficients
+#curve(b[1]+x*b[2]+x^2*b[3], add=TRUE)
+
+#By then combining the two different models obtained from the two parabolas, this equation was then created.
+
+#slm4 <- lm(Y ~ X20 + X3 + I(X20^2) + I(X20*X3) + I(X20^2*X3), data=sdata1)
+#summary(slm4)
+#plot(Y ~ X20, data=sdata1)
+#b <- slm4$coefficients
+#curve(b[1]+X20*b[2]+X3*b[3]+X20^2*b[4]+X20*X3*b[5]+X20^2*X3*b[6], add=TRUE)
+#confint(slm4, level=1-0.01/6)
+
+```
+
+
+
+## Step 3. Final Synthesis
+
+Document the approach Brother Saunders used to uncover your true regression model. State what things worked well and what things did not. How well did he recover your true regression model? Did he recover a mathematically equivalent version of your regression model?
+
+```{r, include=FALSE}
+## Y_i = 20 + 5x + epsilon 
+
+set.seed(4)  
+N = 30
+X = runif(N,5,30)
+beta0 = 20
+beta1 = 5
+epsilon = rnorm(N,0,2.5)
+Y = beta0 + beta1*X + epsilon
+my.lm <- lm(Y ~ X)
+plot(Y ~ X)
+abline(my.lm)
+abline(beta0, beta1, lty=2)
+b <- my.lm$coefficients
+curve(b[1] + b[2]*x, add=TRUE)
+curve(beta0 + beta1*x, add=TRUE, lty=2)
+EY = (beta0 + beta1*X)
+SE <- sum( (my.lm$fit - (beta0 + beta1*X))^2 )
+SE
+```
+
+### Brother Saunders attempt at my model
+
+$$
+  Y_i = \beta_0 + \beta_1 X_8^2 + \beta_2 X_{12} + \beta_3 X_5 + \epsilon_i
+$$
+
+where $\epsilon_i \sim N(0, 13.68^2)$ with
+
+```{r}
+#pander::pander(confint(y.lm.8.12.5, level=1-0.05/4), caption="Confidence Intervales")
+```
+
+--------------------------------------
+     &nbsp;        Lower      Upper 
+----------------- --------- ----------
+  $\beta_0$        79.98     135.4   
+
+   $\beta_1$        16.33      16.5   
+
+   $\beta_2$        -19.01    -0.5839  
+
+   $\beta_3$        -8.547    -0.6862  
+--------------------------------------
+
+Table: 95% Simultaneous Confidence Intervals
+
+### Analysis of Brother Saunders attempt at my model
+
+To start oof, I must begin with honesty. I was trying really hard to make this model with interactions and try to turn on some dummy variables. I was unable to do so, because I could not remember the proper coding. As I was working on my data for hours, I finally just decided to go with a straight linear model that includes four different terms. 
+
+My error was in that as I had wanted to include a dummy variable, I had two variables that were in the interaction. When I got rid of the interaction I accidentally erased the variable that I was going to use that is a quantitative variable. As I did that, I left a categorical variable in as if it were a quantitative one. This in turn messed up Brother Saunders and caused a lot of confusion and time in his part. I did not realize this until I saw that he did not get my model, and that it caused him a lot of time.
+
+####Finding X's
+Brother Saunder went through my data with the pairs command to see what x values looked promising. He was then able to figure out which of the data looked to be most beneficial.
+Once he found that x value, he used boxCox to see if any transformations were needed. BoxCox suggested using a squareroot transformation.
+Brother Saunders then went through the data and dropped out the x variables that were repetative, or that gave no information.
+To find the rest of the x values that add to the model Brother Saunders used added variable plots and pairs plots for specific x variables.
+
+####Truth
+Brother Saunders was able to catch a few of my variables, but he did not have the correct model. The other important thing is that none of his betas matched up to mine. 
+
+####Mathematical Equivalent
+
+```{r}
+EY <- beta0 + beta1*X4 + beta2*X6 + beta3*X20 + beta4*X7
+beta5 = 107.69
+beta6 = 16.415
+beta7 = -9.79695
+beta8 = -4.6166
+Yhat <- beta5 + beta6*I(X8^2) + beta7*X12 + beta8*X5
+SE <- sum( (Yhat - EY)^2 )
+SEE <- sum( (Y - EY)^2 )
+SE
+SEE
+```
+
+After further analysis of Brother Saunders' model, his SE is smaller than my SEE. This means that his model better represents the data than my model. At first try, I did not use the median of his confidence intervals to calculate SE. After receiving instruction from Brother Saunders I was able to more accurately calculate his model and see that his model better represents the data than my model.
+
+
+
+
+<footer>
+</footer>
+
+
+
+ 
+
+ 
+
+ 
+
+ 

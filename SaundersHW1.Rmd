@@ -1,0 +1,156 @@
+---
+title: "Hard Work 1"
+author: "Brother Saunders"
+output: 
+  html_document:
+    theme: cerulean
+    toc: true
+    toc_float: true
+    code_folding: hide
+---
+
+## Reading Points {21/21}
+
+----
+
+I studied the following sections and deserve the following amount of credit for my work.
+
+##### Section 1.1 {3/3}
+
+##### Section 1.2 {3/3}
+
+##### Section 1.3 {3/3}
+
+##### Section 1.4 {2/2}
+
+##### Section 1.5 {2/2}
+
+##### Section 1.6 {3/3}
+
+##### Section 1.7 {2/2}
+
+##### Section 1.8 {3/3}
+
+<br />
+
+## Theory Points
+
+----
+
+### Chalkboard Problem **{3}** 
+
+
+### Problem 1.29 & 1.30
+
+**1.29**. Refer to regression model (1.1).
+
+$$
+  Y_i = \beta_0 + \beta_1 X_i + \epsilon_i \quad (1.1)
+$$
+Assume that $X=0$ is within the scope of the model. What is the implication for the regression function if $\beta_0 = 0$ so that the model is $Y_i = \beta_1 X_i + \epsilon_i$? 
+
+<div style="color:#317eac; padding-left:15px;">
+**Answer**. If $\beta_0 = 0$, then the y-intercept of the model is 0. Since $X=0$ is in the scope of the model, we gain the insight that the average y-value for $X=0$ is zero.
+
+</div>
+
+How would the regression function plot on a graph?
+
+
+<div style="color:#317eac; padding-left:15px;">
+**Answer**. The regression line will go through the origin and have slope $\beta_1$. Something like the following, but the slope could be negative as well.
+
+```{r, echo=FALSE}
+curve(3*x, -2, 8, bty='n', xaxt='n', yaxt='n', xlab="", ylab="")
+abline(h=0, v=0)
+```
+
+</div>
+
+**1.30**. What is the implication for the regression function if $\beta_1 = 0$ so that the model is $Y_i = \beta_0 + \epsilon_i$?
+
+<div style="color:#317eac; padding-left:15px;">
+**Answer**. The regression line will be a horizontal line with a y-intercept of $\beta_0$. In other words, $X$ provides no useful information about the average $Y$-value. The average $Y$-value is the same for all values of $X$ in this case.
+</div>
+
+How would the regression function plot on a graph?
+
+<div style="color:#317eac; padding-left:15px;">
+**Answer**. The plot would look something like the following.
+
+```{r, echo=FALSE}
+curve(3 + 0*x, -2, 8, ylim=c(-2,5), bty='n', xaxt='n', yaxt='n', xlab="", ylab="")
+abline(h=0, v=0)
+```
+
+</div>
+
+<br />
+
+## Application Points
+
+----
+
+### Problem 1.19
+
+Note that $V1$ is $Y$ (GPA at the end of the freshman year) and $V2$ is $X$ (ACT test score) based on the information shown in the textbook for this problem. The goal of this problem is to predict the freshman GPA using the ACT Test Score.
+
+Here are the first six observations of the dataset and the regression output.
+
+```{r}
+p19 <- read.table("http://www.stat.ufl.edu/~rrandles/sta4210/Rclassnotes/data/textdatasets/KutnerData/Chapter%20%201%20Data%20Sets/CH01PR19.txt", header=FALSE)
+head(p19)
+p19.lm <- lm(V1 ~ V2, data=p19)
+summary(p19.lm)
+```
+
+**(a)** The least squares estimate for $\beta_0$ is $b_0 = `r p19.lm$coef[1]`$ and $\beta_1$ is $b_1 = `r p19.lm$coef[2]`$. This gives the estimated regression function as
+$$
+  \hat{Y} = \underbrace{`r p19.lm$coef[1]`}_{b_0} + \underbrace{`r p19.lm$coef[2]`}_{b_1} X
+$$
+
+**(b)** The plot of the data with the estimated regression function shows a rather poor fit to the data, which looks more like a map of the United States than a linear pattern. Regression probably isn't very meaningful for these data.
+
+```{r}
+plot(V1 ~ V2, data=p19, xlab="ACT Test Score (V2)", ylab="Freshman GPA (V1)")
+abline(p19.lm)
+```
+
+**(c)** The point estimate for the mean freshman GPA (V1) for students with ACT test score $X=30$ is 
+$$
+  `r p19.lm$coef[1]` + `r p19.lm$coef[2]`\times 30 = `r predict(p19.lm, data.frame(V2=30))`
+$$
+
+**(d)** The slope term of $`r p19.lm$coef[2]`$ gives the point estimate for the change in the mean response when the entrance test score increases by one point. 
+
+
+### Problem 1.20
+
+[Student Solutions](https://byui.brightspace.com/d2l/le/content/218857/viewContent/3420169/View) available for this problem.
+
+Note that V1 is $Y$ (total number of minutes spent by the serviceman repairing the copier) and V2 is $X$ (number of copiers serviced by a serviceman). The goal of this problem is to predict the time a service call takes based on the number of copiers serviced.
+
+Here are the first six observations and regression output.
+
+```{r}
+p20 <- read.table("http://www.stat.ufl.edu/~rrandles/sta4210/Rclassnotes/data/textdatasets/KutnerData/Chapter%20%201%20Data%20Sets/CH01PR20.txt", header=FALSE)
+head(p20)
+p20.lm <- lm(V1 ~ V2, data=p20)
+summary(p20.lm)
+```
+
+**(a)** The estimated regression function is
+$$
+  \hat{Y} = `r p20.lm$coef[1]` + `r p20.lm$coef[2]` X
+$$
+**(b)** The plot of the estimated regression function on the data shows a very good fit to the data.
+
+```{r}
+plot(V1 ~ V2, data=p20, xlab="Number of Copiers Serviced (V2)", ylab="Time Spent on Service Call (V1)")
+abline(p20.lm)
+```
+
+**(c)** The interpretation of $b_0$ for these data is not especially meaningful because if zero copiers are serviced, then we wouldn't expect any time to be spend on the service call. The first value of interest in the scope of the model is $X=1$.
+
+**(d)** The point estimate of the mean service time when $X=5$ copiers are serviced is $`r predict(p20.lm, data.frame(V2=5))`$. (Note I used the `predict()` function to obtain my answer.)
+
